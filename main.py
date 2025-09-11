@@ -1,71 +1,49 @@
 import streamlit as st
 
-st.title("혈압 진단 프로그램")
-st.write("혈압 수치를 입력하면 결과와 예방/약물 정보를 알려드립니다.")
+# 영화 데이터
+movies = {
+    '액션': ['다크 나이트', '어벤져스', '매드 맥스'],
+    '코미디': ['슈렉', '미니언즈', '행오버'],
+    '로맨스': ['노트북', '어바웃 타임', '라라랜드'],
+    '공포': ['컨저링', '겟 아웃', '그것'],
+    'SF': ['인터스텔라', '인셉션', '매트릭스']
+}
 
-# 혈압 입력
-n = st.number_input("혈압을 작성하세요", min_value=0, max_value=300, step=1)
-
-if n > 0:  # 0 이상일 때만 실행
-    if n < 90:
-        st.subheader("저혈압 입니다.")
-        st.write("약물을 알려드릴게요. 자세히 알고 싶으시다면 한 개를 선택해주세요.")
-
-        dic1 = {'약물1':'오르메테프릴', '약물2':'미도드린'}
-        선택약물 = st.radio("약물을 선택하세요", list(dic1.values()))
-
-        if 선택약물 == '오르메테프릴':
-            st.write("✅ 장점: 서서히 혈압을 상승시키고 부작용이 적음")
-            st.write("⚠️ 단점: 혈압을 올리는 속도가 느리고 오심, 설사 등의 부작용 발생 가능")
-        elif 선택약물 == '미도드린':
-            st.write("✅ 장점: 혈압을 빠르게 상승시키고 안정성이 높음")
-            st.write("⚠️ 단점: 두통, 구역질 등의 부작용 발생 가능, 장기 사용 시 피부/모발 성장에 영향")
-
-    elif n < 120:
-        st.subheader("정상입니다!")
-
-    elif n < 140:
-        st.subheader("고혈압 전 단계 입니다.")
-        st.write("예방 카테고리 중 한 개를 선택하세요")
-
-        dic2 = {'예방1':'식단', '예방2':'운동','예방3':'술과 담배'}
-        선택카테고리 = st.radio("예방 카테고리를 선택하세요", list(dic2.values()))
-
-        if 선택카테고리 == '식단':
-            st.write("🥗 1. 총 염분섭취량 제한\n🥗 2. 과일, 채소, 식이섬유 섭취")
-        elif 선택카테고리 == '운동':
-            st.write("🏃‍♂️ 1. 걷기\n🏃‍♀️ 2. 빠르게 걷기\n🏋️ 3. 뛰기 등 유산소 운동 주 3회 이상, 20~30분")
-        elif 선택카테고리 == '술과 담배':
-            st.write("🚭 과도한 음주는 고혈압 발병 위험 증가\n🚭 반복적 폭음은 장기적으로 고혈압 유발")
-
-    elif n < 160:
-        st.subheader("고혈압 1단계 입니다.")
-        st.write("약물 종류를 알려드릴게요. 자세히 알고 싶으시다면 한 개를 선택해주세요.")
-
-        dic3 = ['안지오텐신 억제제','칼슘채널 차단제','베타 차단제','이뇨제']
-        선택약물 = st.radio("약물을 선택하세요", dic3)
-
-        if 선택약물 == '안지오텐신 억제제':
-            st.write("혈압을 낮추고 심부전, 단백뇨가 있는 당뇨환자에게 적합. 예: 타나트릴, 카프릴")
-        elif 선택약물 == '칼슘채널 차단제':
-            st.write("혈관 확장 효과. 협심증·고혈압 환자에서 효과적. 예: 아달리트, 헤르벤")
-        elif 선택약물 == '베타 차단제':
-            st.write("협심증, 심근경색, 빈맥성 부정맥 권고. 예: 딜라트렌드, 테놀민")
-        elif 선택약물 == '이뇨제':
-            st.write("나트륨·수분 재흡수 억제, 체액량 감소로 혈압 하강. 예: 아밀로라이드, 알닥톤")
-
+# 영화 추천 함수
+def recommend_movies(genre):
+    if genre in movies:
+        st.subheader(f"추천하는 {genre} 영화 🎬")
+        for movie in movies[genre]:
+            st.write(f"- {movie}")
     else:
-        st.subheader("고혈압 2단계 입니다.")
-        st.write("약물을 알려드릴게요. 자세히 알고 싶으시다면 한 개를 선택해주세요.")
+        st.warning("해당 장르의 영화는 없습니다.")
 
-        dic4 = ['안지오텐신 억제제','칼슘채널 차단제','베타 차단제','이뇨제']
-        선택약물 = st.radio("약물을 선택하세요", dic4)
+# 영화 추가 함수
+def add_movie(genre, new_movie):
+    if genre in movies:
+        movies[genre].append(new_movie)
+        st.success(f"'{new_movie}'가 {genre} 장르에 추가되었습니다!")
+    else:
+        st.error("해당 장르가 없습니다.")
 
-        if 선택약물 == '안지오텐신 억제제':
-            st.write("혈압을 낮추고 심부전, 단백뇨가 있는 당뇨환자에게 적합. 예: 타나트릴, 카프릴")
-        elif 선택약물 == '칼슘채널 차단제':
-            st.write("혈관 확장 효과. 협심증·고혈압 환자에서 효과적. 예: 아달리트, 헤르벤")
-        elif 선택약물 == '베타 차단제':
-            st.write("협심증, 심근경색, 빈맥성 부정맥 권고. 예: 딜라트렌드, 테놀민")
-        elif 선택약물 == '이뇨제':
-            st.write("나트륨·수분 재흡수 억제, 체액량 감소로 혈압 하강. 예: 아밀로라이드, 알닥톤")
+# 앱 UI
+st.title("🎥 영화 추천 프로그램")
+menu = st.sidebar.radio("메뉴를 선택하세요", ["영화 추천받기", "영화 추가하기"])
+
+if menu == "영화 추천받기":
+    genre = st.selectbox("장르를 선택하세요", list(movies.keys()))
+    if st.button("추천 영화 보기"):
+        recommend_movies(genre)
+
+elif menu == "영화 추가하기":
+    genre = st.selectbox("영화를 추가할 장르를 선택하세요", list(movies.keys()))
+    new_movie = st.text_input("추가할 영화 제목을 입력하세요")
+    if st.button("영화 추가"):
+        if new_movie.strip():
+            add_movie(genre, new_movie.strip())
+        else:
+            st.warning("영화 제목을 입력해주세요!")
+
+# 현재 영화 데이터 확인
+with st.expander("📌 현재 영화 데이터 보기"):
+    st.json(movies)
